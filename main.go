@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 )
@@ -15,7 +16,10 @@ import (
 var embedFS embed.FS
 
 func main() {
-	app := fiber.New()
+	app := fiber.New(fiber.Config{
+		JSONEncoder: json.Marshal,
+		JSONDecoder: json.Unmarshal,
+	})
 
 	// embed ui into program binary
 	app.Use("/app", filesystem.New(filesystem.Config{
