@@ -39,10 +39,10 @@ func main() {
 	})
 
 	// embed ui into program binary
-	app.Use("/app", filesystem.New(filesystem.Config{
-		Root:       http.FS(embedFS),
-		PathPrefix: "app",
-		Browse:     true,
+	app.Use(filesystem.New(filesystem.Config{
+		Root: http.FS(embedFS),
+		//PathPrefix: "app",
+		//Browse: true,
 	}))
 
 	// use and config recovery middleware with custom stacktrace handler
