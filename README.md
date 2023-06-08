@@ -1,4 +1,4 @@
-**Simple web control panel for GNU/Linux**
+**Simple web administration tool (control panel) for GNU/Linux**
 
 # Status
 pre-alpha
