@@ -1,3 +1,7 @@
-# Simple web control panel for GNU/Linux
+**Simple web control panel for GNU/Linux**
 
-## Status: pre-alpha
+# Status
+pre-alpha
+
+# Deployment dependencies
+**None**. The app comes in the form of just a single binary.
