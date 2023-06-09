@@ -4,4 +4,4 @@
 pre-alpha
 
 # Deployment dependencies
-**None**. The app comes in the form of just a single binary.
+**None**. The app comes in the form of just a **single binary** - without any external dependencies.
