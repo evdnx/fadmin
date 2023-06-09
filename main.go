@@ -54,5 +54,8 @@ func main() {
 	}))
 
 	// start app
-	glog.Fatal(app.Listen(fmt.Sprint(":", *port)))
+	err := app.Listen(fmt.Sprint(":", *port))
+	if err != nil {
+		glog.Fatal(err)
+	}
 }
