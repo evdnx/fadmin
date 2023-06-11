@@ -1,3 +1,2 @@
 - get system info on startup
 - save token key in a temporary file after successful login
-- switch from fiber to gin
