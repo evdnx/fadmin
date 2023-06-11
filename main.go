@@ -7,10 +7,7 @@ import (
 	"net/http"
 	"runtime/debug"
 
-	"github.com/goccy/go-json"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gin-gonic/gin"
 	"github.com/golang/glog"
 )
 
@@ -32,29 +29,19 @@ func main() {
 	// setup logging
 	glog.MaxSize = 16777216 // 16 MB
 
-	// create new fiber app
-	app := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
-	})
+	// create new gin app
+	r := gin.New()
 
 	// embed ui into program binary
-	app.Use(filesystem.New(filesystem.Config{
-		Root: http.FS(embedFS),
-		//PathPrefix: "app",
-		//Browse: true,
-	}))
+	r.StaticFS("/app", http.FS(embedFS))
 
 	// use and config recovery middleware with custom stacktrace handler
-	app.Use(recover.New(recover.Config{
-		EnableStackTrace: true,
-		StackTraceHandler: func(c *fiber.Ctx, e interface{}) {
-			glog.Errorf("\npanic: %v\n%s\n", e, debug.Stack())
-		},
+	r.Use(gin.CustomRecovery(func(c *gin.Context, e any) {
+		glog.Errorf("\npanic: %v\n%s\n", e, debug.Stack())
 	}))
 
 	// start app
-	err := app.Listen(fmt.Sprint(":", *port))
+	err := r.Run(fmt.Sprint(":", *port))
 	if err != nil {
 		glog.Fatal(err)
 	}
