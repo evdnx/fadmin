@@ -54,7 +54,8 @@ func main() {
 	}
 
 	app.Use(filesystem.New(filesystem.Config{
-		Root: http.FS(f),
+		Root:         http.FS(f),
+		NotFoundFile: "404.html",
 	}))
 
 	// start app
