@@ -1,4 +1,4 @@
-**Simple web administration tool (control panel) for GNU/Linux**
+**Simple web administration tool (control panel) for GNU/Linux - written in Go and Typescript**
 
 # Status
 pre-alpha
