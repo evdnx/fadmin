@@ -42,7 +42,7 @@ func main() {
 	// use and config recovery middleware with custom stacktrace handler
 	app.Use(recover.New(recover.Config{
 		EnableStackTrace: true,
-		StackTraceHandler: func(c *fiber.Ctx, e interface{}) {
+		StackTraceHandler: func(c *fiber.Ctx, e any) {
 			glog.Errorf("\npanic: %v\n%s\n", e, debug.Stack())
 		},
 	}))
