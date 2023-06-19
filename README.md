@@ -1,6 +1,6 @@
 **Simple web administration tool (control panel) for GNU/Linux - written in Go and Typescript**
 
-![GitHub](https://img.shields.io/github/license/evdnx/linux-control)
+[![License](https://img.shields.io/github/license/evdnx/linux-control)](https://github.com/evdnx/linux-control/blob/main/README.md)
 [![Go Report Card](https://goreportcard.com/badge/github.com/evdnx/linux-control)](https://goreportcard.com/report/github.com/evdnx/linux-control)
 
 # Status
