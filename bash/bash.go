@@ -8,6 +8,6 @@ import (
 )
 
 func Cmd(command string) *exec.Cmd {
-	c := fmt.Sprint("echo ", auth.Password, " | su - ", auth.Username, " -c ", command)
+	c := fmt.Sprint("echo ", auth.Password(), " | su - ", auth.Username(), " -c ", command)
 	return exec.Command("bash", "-c", c)
 }
