@@ -1,7 +1,7 @@
-**Simple web administration tool (control panel) for GNU/Linux - written in Go and Typescript**
-
-[![License](https://img.shields.io/github/license/evdnx/linux-control)](https://github.com/evdnx/linux-control/blob/main/LICENSE)
-[![Go Report Card](https://goreportcard.com/badge/github.com/evdnx/linux-control)](https://goreportcard.com/report/github.com/evdnx/linux-control)
+# UnixMint
+**Simple web-based administration tool (control panel) for Unix-like systems - written in Go and Typescript**
+[![License](https://img.shields.io/github/license/evdnx/unixmint)](https://github.com/evdnx/unixmint/blob/main/LICENSE)
+[![Go report](https://goreportcard.com/badge/github.com/evdnx/unixmint)](https://goreportcard.com/report/github.com/evdnx/unixmint)
 
 # Status
 pre-alpha
