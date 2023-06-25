@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 )
 
+var keyFileName string = ""
 var pwdFileName string = ""
 
 func Login(username, password string) error {
@@ -29,8 +30,15 @@ func Login(username, password string) error {
 		return err
 	}
 
-	// generate file name
+	// generate file names
+	keyFileName = uuid.NewString()
 	pwdFileName = uuid.NewString()
+
+	// write encryption key to a temporary file
+	err = os.WriteFile(fmt.Sprint("/tmp/", keyFileName), []byte(key), 0644)
+	if err != nil {
+		return err
+	}
 
 	// write encrypted password to a temporary file
 	err = os.WriteFile(fmt.Sprint("/tmp/", pwdFileName), []byte(encryptedPassword), 0644)
@@ -46,5 +54,23 @@ func Username() string {
 }
 
 func Password() string {
-	return ""
+	// read key file
+	key, err := os.ReadFile(keyFileName)
+	if err != nil {
+		return ""
+	}
+
+	// read password file
+	pwd, err := os.ReadFile(pwdFileName)
+	if err != nil {
+		return ""
+	}
+
+	// decrypt password
+	password, err := crypt.Decrypt(key, string(pwd))
+	if err != nil {
+		return ""
+	}
+
+	return password
 }
