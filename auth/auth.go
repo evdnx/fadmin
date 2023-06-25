@@ -5,8 +5,8 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/evdnx/linux-control/pkg/crypt"
-	"github.com/evdnx/linux-control/pkg/util"
+	"github.com/evdnx/unixmint/pkg/crypt"
+	"github.com/evdnx/unixmint/pkg/util"
 	"github.com/google/uuid"
 )
 

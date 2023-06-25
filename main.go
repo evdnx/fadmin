@@ -23,7 +23,7 @@ func main() {
 	// logging
 	flag.Set("logtostderr", "false")
 	flag.Set("alsologtostderr", "false")
-	flag.Set("log_dir", "/var/log/linux-control")
+	flag.Set("log_dir", "/var/log/unixmint")
 	// port
 	port := flag.Int("port", 3000, "")
 

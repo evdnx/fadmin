@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os/exec"
 
-	"github.com/evdnx/linux-control/auth"
+	"github.com/evdnx/unixmint/auth"
 )
 
 func Cmd(command string) *exec.Cmd {

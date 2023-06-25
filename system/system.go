@@ -1,7 +1,7 @@
 package system
 
 import (
-	"github.com/evdnx/linux-control/bash"
+	"github.com/evdnx/unixmint/bash"
 )
 
 type Host struct {

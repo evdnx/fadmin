@@ -1,4 +1,4 @@
-module github.com/evdnx/linux-control
+module github.com/evdnx/unixmint
 
 go 1.20
 
