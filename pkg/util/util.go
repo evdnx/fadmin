@@ -1,6 +1,10 @@
 package util
 
-import "math/rand"
+import (
+	"math/rand"
+
+	"github.com/goccy/go-json"
+)
 
 // RandomString generates a random string of a given length
 func RandomString(length int) string {
@@ -12,4 +16,17 @@ func RandomString(length int) string {
 	}
 
 	return string(s)
+}
+
+// InterfaceToByte converts an interface to byte array
+func InterfaceToByte(i any) []byte {
+	switch i := i.(type) {
+	case []byte:
+		return i
+	case string:
+		return []byte(i)
+	default:
+		b, _ := json.Marshal(i)
+		return b
+	}
 }

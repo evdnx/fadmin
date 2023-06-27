@@ -1,45 +1,79 @@
 package crypt
 
 import (
-	"crypto/aes"
 	"crypto/cipher"
-	"encoding/base64"
+	"crypto/rand"
+	"errors"
+
+	"github.com/evdnx/unixmint/pkg/util"
+	"golang.org/x/crypto/chacha20poly1305"
 )
 
+var aeadCipher cipher.AEAD = nil
+
+func getCipher() (cipher.AEAD, error) {
+	if aeadCipher != nil {
+		return aeadCipher, nil
+	}
+
+	// key should be randomly generated or derived from a function like Argon2
+	key := make([]byte, chacha20poly1305.KeySize)
+	if _, err := rand.Read(key); err != nil {
+		return nil, err
+	}
+
+	aead, err := chacha20poly1305.NewX(key)
+	if err != nil {
+		return nil, err
+	}
+
+	return aead, nil
+}
+
+func Reset() {
+	aeadCipher = nil
+}
+
 // Encrypt encrypts a message
-func Encrypt(key []byte, message string) (string, error) {
-	block, err := aes.NewCipher(key)
+func Encrypt(message any) (string, error) {
+	msg := util.InterfaceToByte(message)
+	aead, err := getCipher()
 	if err != nil {
 		return "", err
 	}
 
-	plainText := []byte(message)
-	cipherText := make([]byte, len(plainText))
+	// Select a random nonce, and leave capacity for the ciphertext.
+	nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(msg)+aead.Overhead())
+	if _, err := rand.Read(nonce); err != nil {
+		panic(err)
+	}
 
-	iv := cipherText[:aes.BlockSize]
-	cfb := cipher.NewCFBEncrypter(block, iv)
-	cfb.XORKeyStream(cipherText, plainText)
-
-	return base64.StdEncoding.EncodeToString(cipherText), nil
+	// Encrypt the message and append the ciphertext to the nonce.
+	encryptedMsg := aead.Seal(nonce, nonce, msg, nil)
+	return string(encryptedMsg), nil
 }
 
 // Decrypt decrypts a message
-func Decrypt(key []byte, message string) (string, error) {
-	block, err := aes.NewCipher([]byte(key))
+func Decrypt(encryptedMessage any) (string, error) {
+	aead, err := getCipher()
 	if err != nil {
 		return "", err
 	}
 
-	cipherText, err := base64.StdEncoding.DecodeString(message)
-	if err != nil {
-		return "", err
+	byteMsg := util.InterfaceToByte(encryptedMessage)
+
+	if len(byteMsg) < aead.NonceSize() {
+		return "", errors.New("ciphertext too short")
 	}
 
-	iv := cipherText[:aes.BlockSize]
-	cfb := cipher.NewCFBDecrypter(block, iv)
+	// Split nonce and ciphertext.
+	nonce, ciphertext := byteMsg[:aead.NonceSize()], byteMsg[aead.NonceSize():]
 
-	plainText := make([]byte, len(cipherText))
-	cfb.XORKeyStream(plainText, cipherText)
+	// Decrypt the message and check it wasn't tampered with.
+	plaintext, err := aead.Open(nil, nonce, ciphertext, nil)
+	if err != nil {
+		panic(err)
+	}
 
-	return string(plainText), nil
+	return string(plaintext), nil
 }
