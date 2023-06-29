@@ -45,7 +45,7 @@ func Encrypt(message any) (string, error) {
 	// Select a random nonce, and leave capacity for the ciphertext.
 	nonce := make([]byte, aead.NonceSize(), aead.NonceSize()+len(msg)+aead.Overhead())
 	if _, err := rand.Read(nonce); err != nil {
-		panic(err)
+		return "", err
 	}
 
 	// Encrypt the message and append the ciphertext to the nonce.
@@ -72,7 +72,7 @@ func Decrypt(encryptedMessage any) (string, error) {
 	// Decrypt the message and check it wasn't tampered with.
 	plaintext, err := aead.Open(nil, nonce, ciphertext, nil)
 	if err != nil {
-		panic(err)
+		return "", err
 	}
 
 	return string(plaintext), nil
