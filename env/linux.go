@@ -1,6 +1,6 @@
 // go:build linux
 
-package init
+package env
 
 func init() {
 

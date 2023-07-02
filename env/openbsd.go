@@ -1,6 +1,6 @@
 // go:build openbsd
 
-package init
+package env
 
 func init() {
 

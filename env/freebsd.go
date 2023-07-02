@@ -1,6 +1,6 @@
 // go:build freebsd
 
-package init
+package env
 
 func init() {
 

@@ -1,6 +1,6 @@
 // go:build dragonfly
 
-package init
+package env
 
 func init() {
 

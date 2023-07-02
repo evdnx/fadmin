@@ -1,6 +1,6 @@
 // go:build netbsd
 
-package init
+package env
 
 func init() {
 
