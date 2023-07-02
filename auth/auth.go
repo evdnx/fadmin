@@ -13,7 +13,7 @@ var pwdFileName string = ""
 
 func Login(username, password string) error {
 	command := fmt.Sprint("echo ", password, " | su - ", username, " -c ", `"echo 1"`)
-	cmd := exec.Command("bash", "-c", command)
+	cmd := exec.Command("sh", "-c", command)
 	err := cmd.Run()
 	if err != nil {
 		return err
