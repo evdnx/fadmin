@@ -1,7 +1,7 @@
 package system
 
 import (
-	"github.com/evdnx/unixmint/bash"
+	"github.com/evdnx/unixmint/cmd"
 )
 
 type Host struct {
@@ -30,7 +30,7 @@ type Host struct {
 }
 
 func Info() (string, error) {
-	out, err := bash.Cmd("hostnamectl --json=short").Output()
+	out, err := cmd.Exec("hostnamectl --json=short").Output()
 	if err != nil {
 		return "", err
 	}
