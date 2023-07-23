@@ -58,10 +58,10 @@ func main() {
 
 	// rate limiter
 	app.Use(limiter.New(limiter.Config{
-		Max:               1,
-		Expiration:        1 * time.Second,
-		LimiterMiddleware: limiter.SlidingWindow{},
-		Storage:           storage,
+		Max:        1,
+		Expiration: 1 * time.Second,
+		//LimiterMiddleware: limiter.SlidingWindow{},
+		Storage: storage,
 	}))
 
 	// embed ui into program binary
