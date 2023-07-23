@@ -7,11 +7,14 @@ import (
 	"io/fs"
 	"net/http"
 	"runtime/debug"
+	"time"
 
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
+	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
+	"github.com/gofiber/storage/bbolt"
 	"github.com/golang/glog"
 )
 
@@ -45,6 +48,20 @@ func main() {
 		StackTraceHandler: func(c *fiber.Ctx, e any) {
 			glog.Errorf("\npanic: %v\n%s\n", e, debug.Stack())
 		},
+	}))
+
+	// initialize rate limiter store
+	storage := bbolt.New(bbolt.Config{
+		Database: "unixmint.db",
+		Bucket:   "ratelimit",
+	})
+
+	// rate limiter
+	app.Use(limiter.New(limiter.Config{
+		Max:               1,
+		Expiration:        1 * time.Second,
+		LimiterMiddleware: limiter.SlidingWindow{},
+		Storage:           storage,
 	}))
 
 	// embed ui into program binary

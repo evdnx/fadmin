@@ -5,8 +5,14 @@ go 1.20
 require github.com/gofiber/fiber/v2 v2.47.0
 
 require (
+	github.com/gofiber/utils v1.0.1 // indirect
+	go.etcd.io/bbolt v1.3.7 // indirect
+)
+
+require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/goccy/go-json v0.10.2
+	github.com/gofiber/storage/bbolt v1.3.5
 	github.com/golang/glog v1.1.1
 	github.com/google/uuid v1.3.0
 	github.com/klauspost/compress v1.16.6 // indirect
