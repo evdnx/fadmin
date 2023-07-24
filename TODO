@@ -1,3 +1,4 @@
 - get system info on startup
 - save token key and encrypted password in a temporary file after successful login
 - figure out best name for a temp file where encrypted password will be stored
+- save and read branca key

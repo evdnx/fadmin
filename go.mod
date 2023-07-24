@@ -11,6 +11,7 @@ require (
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
+	github.com/essentialkaos/branca/v2 v2.0.0
 	github.com/goccy/go-json v0.10.2
 	github.com/gofiber/storage/bbolt v1.3.5
 	github.com/golang/glog v1.1.1
