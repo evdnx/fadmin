@@ -29,7 +29,7 @@ func Login(username, password string) error {
 	pwdFileName = uuid.NewString()
 
 	// write encrypted password to a temporary file
-	err = os.WriteFile(fmt.Sprint("/tmp/", pwdFileName), []byte(encryptedPassword), 0644)
+	err = os.WriteFile(fmt.Sprint("/tmp/", pwdFileName), []byte(encryptedPassword), 0600)
 	if err != nil {
 		return err
 	}
