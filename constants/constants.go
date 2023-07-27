@@ -1,5 +1,5 @@
 package constants
 
 const (
-	DataFileName string = "unixmint"
+	DbName string = "unixmint.db"
 )
