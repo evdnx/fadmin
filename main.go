@@ -6,9 +6,11 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
+	"os"
 	"runtime/debug"
 	"time"
 
+	"github.com/evdnx/unixmint/constants"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
@@ -35,6 +37,14 @@ func main() {
 
 	// setup logging
 	glog.MaxSize = 16777216 // 16 MB
+
+	// create data file if it doesn't exist yet
+	if _, err := os.Stat(constants.DataFileName); err != nil && os.IsNotExist(err) {
+		err = os.WriteFile(constants.DataFileName, []byte{}, 0600)
+		if err != nil {
+			glog.Fatal(err)
+		}
+	}
 
 	// create new fiber app
 	app := fiber.New(fiber.Config{
