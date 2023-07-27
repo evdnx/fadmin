@@ -6,17 +6,16 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"os"
 	"runtime/debug"
 	"time"
 
-	"github.com/evdnx/unixmint/constants"
+	"github.com/evdnx/unixmint/db"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"github.com/gofiber/fiber/v2/middleware/recover"
-	"github.com/gofiber/storage/bbolt"
+	gofiber_bbolt_storage "github.com/gofiber/storage/bbolt"
 	"github.com/golang/glog"
 )
 
@@ -38,12 +37,9 @@ func main() {
 	// setup logging
 	glog.MaxSize = 16777216 // 16 MB
 
-	// create data file if it doesn't exist yet
-	if _, err := os.Stat(constants.DataFileName); err != nil && os.IsNotExist(err) {
-		err = os.WriteFile(constants.DataFileName, []byte{}, 0600)
-		if err != nil {
-			glog.Fatal(err)
-		}
+	// init db
+	if err := db.Init(); err != nil {
+		glog.Fatalln(err)
 	}
 
 	// create new fiber app
@@ -61,7 +57,7 @@ func main() {
 	}))
 
 	// initialize rate limiter store
-	storage := bbolt.New(bbolt.Config{
+	storage := gofiber_bbolt_storage.New(gofiber_bbolt_storage.Config{
 		Database: "ratelimit.db",
 		Bucket:   "ratelimit",
 	})
