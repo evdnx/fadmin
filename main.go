@@ -62,7 +62,7 @@ func main() {
 
 	// initialize rate limiter store
 	storage := bbolt.New(bbolt.Config{
-		Database: "unixmint.db",
+		Database: "ratelimit.db",
 		Bucket:   "ratelimit",
 	})
 
