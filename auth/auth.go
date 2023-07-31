@@ -3,18 +3,17 @@ package auth
 import (
 	"errors"
 	"fmt"
-	"os"
 	"os/exec"
 	"time"
 
 	"github.com/essentialkaos/branca/v2"
+	"github.com/evdnx/unixmint/constants"
+	"github.com/evdnx/unixmint/db"
 	"github.com/evdnx/unixmint/pkg/crypt"
 	"github.com/evdnx/unixmint/pkg/util"
 	"github.com/goccy/go-json"
-	"github.com/google/uuid"
+	"go.etcd.io/bbolt"
 )
-
-var pwdFileName string = ""
 
 func Login(username, password string) error {
 	command := fmt.Sprint("echo ", password, " | su - ", username, " -c ", `"echo 1"`)
@@ -30,14 +29,12 @@ func Login(username, password string) error {
 		return err
 	}
 
-	// generate file name
-	pwdFileName = uuid.NewString()
-
-	// write encrypted password to a temporary file
-	err = os.WriteFile(fmt.Sprint("/tmp/", pwdFileName), []byte(encryptedPassword), 0600)
-	if err != nil {
+	// write encrypted password to db
+	err = db.DB().Update(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte(constants.AuthBucket))
+		err := b.Put([]byte("password"), []byte(encryptedPassword))
 		return err
-	}
+	})
 
 	return nil
 }
@@ -47,8 +44,15 @@ func Username() string {
 }
 
 func Password() string {
-	// read password file
-	pwd, err := os.ReadFile(pwdFileName)
+	// read password
+	pwd := ""
+	err := db.DB().View(func(tx *bbolt.Tx) error {
+		b := tx.Bucket([]byte(constants.AuthBucket))
+		v := b.Get([]byte("password"))
+		pwd = string(v)
+		return nil
+	})
+
 	if err != nil {
 		return ""
 	}

@@ -1,5 +1,6 @@
 package constants
 
 const (
-	DbName string = "unixmint.db"
+	DbName     string = "unixmint.db"
+	AuthBucket string = "auth"
 )

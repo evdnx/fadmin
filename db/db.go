@@ -32,3 +32,7 @@ func Init() error {
 func DB() *bbolt.DB {
 	return db
 }
+
+func AuthBucket() {
+
+}
