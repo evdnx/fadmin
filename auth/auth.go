@@ -12,8 +12,22 @@ import (
 	"github.com/evdnx/unixmint/pkg/crypt"
 	"github.com/evdnx/unixmint/pkg/util"
 	"github.com/goccy/go-json"
-	"go.etcd.io/bbolt"
 )
+
+func Init() error {
+	// try to read key
+	_, err := db.Read(constants.AuthBucket, "key")
+	if err != nil {
+		// create new key
+		k := crypt.GenerateKey(32)
+		err = db.Update(constants.AuthBucket, "key", string(k))
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 func Login(username, password string) error {
 	command := fmt.Sprint("echo ", password, " | su - ", username, " -c ", `"echo 1"`)
@@ -24,18 +38,13 @@ func Login(username, password string) error {
 	}
 
 	// encrypt password
-	encryptedPassword, err := crypt.Encrypt(password)
+	encryptedPassword, err := crypt.Encrypt(password, crypt.Key())
 	if err != nil {
 		return err
 	}
 
 	// write encrypted password to db
-	err = db.DB().Update(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte(constants.AuthBucket))
-		err := b.Put([]byte("password"), []byte(encryptedPassword))
-		return err
-	})
-
+	err = db.Update(constants.AuthBucket, "password", encryptedPassword)
 	if err != nil {
 		return err
 	}
@@ -49,20 +58,13 @@ func Username() string {
 
 func Password() string {
 	// read password
-	pwd := ""
-	err := db.DB().View(func(tx *bbolt.Tx) error {
-		b := tx.Bucket([]byte(constants.AuthBucket))
-		v := b.Get([]byte("password"))
-		pwd = string(v)
-		return nil
-	})
-
+	pwd, err := db.Read(constants.AuthBucket, "password")
 	if err != nil {
 		return ""
 	}
 
 	// decrypt password
-	password, err := crypt.Decrypt(pwd)
+	password, err := crypt.Decrypt(pwd, crypt.Key())
 	if err != nil {
 		return ""
 	}

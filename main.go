@@ -9,6 +9,7 @@ import (
 	"runtime/debug"
 	"time"
 
+	"github.com/evdnx/unixmint/auth"
 	"github.com/evdnx/unixmint/db"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
@@ -40,6 +41,12 @@ func main() {
 	// init db
 	if err := db.Init(); err != nil {
 		glog.Fatalln(err)
+	}
+
+	// init services
+	err := auth.Init()
+	if err != nil {
+		glog.Fatal(err)
 	}
 
 	// create new fiber app

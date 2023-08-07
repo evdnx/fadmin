@@ -5,6 +5,8 @@ import (
 	"crypto/rand"
 	"errors"
 
+	"github.com/evdnx/unixmint/constants"
+	"github.com/evdnx/unixmint/db"
 	"github.com/evdnx/unixmint/pkg/util"
 	"golang.org/x/crypto/chacha20poly1305"
 )
@@ -17,10 +19,7 @@ func getCipher() (cipher.AEAD, error) {
 	}
 
 	// key should be randomly generated or derived from a function like Argon2
-	key := make([]byte, chacha20poly1305.KeySize)
-	if _, err := rand.Read(key); err != nil {
-		return nil, err
-	}
+	key := GenerateKey(chacha20poly1305.KeySize)
 
 	aead, err := chacha20poly1305.NewX(key)
 	if err != nil {
@@ -30,12 +29,27 @@ func getCipher() (cipher.AEAD, error) {
 	return aead, nil
 }
 
+func Key() []byte {
+	key, err := db.Read(constants.AuthBucket, "key")
+	if err != nil {
+		return nil
+	}
+
+	return []byte(key)
+}
+
+func GenerateKey(length int) []byte {
+	key := make([]byte, length)
+	rand.Read(key)
+	return key
+}
+
 func Reset() {
 	aeadCipher = nil
 }
 
 // Encrypt encrypts a message
-func Encrypt(message any) (string, error) {
+func Encrypt(message any, key []byte) (string, error) {
 	msg := util.InterfaceToByte(message)
 	aead, err := getCipher()
 	if err != nil {
@@ -54,7 +68,7 @@ func Encrypt(message any) (string, error) {
 }
 
 // Decrypt decrypts a message
-func Decrypt(encryptedMessage any) (string, error) {
+func Decrypt(encryptedMessage any, key []byte) (string, error) {
 	aead, err := getCipher()
 	if err != nil {
 		return "", err

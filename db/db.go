@@ -52,6 +52,10 @@ func Read(bucket, key string) (string, error) {
 		}
 
 		v := b.Get([]byte(key))
+		if v == nil {
+			return errors.New("the key " + key + " does not exist")
+		}
+
 		value = string(v)
 		return nil
 	})
