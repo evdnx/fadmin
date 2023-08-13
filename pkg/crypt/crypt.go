@@ -18,10 +18,7 @@ func getCipher() (cipher.AEAD, error) {
 		return aeadCipher, nil
 	}
 
-	// key should be randomly generated or derived from a function like Argon2
-	key := GenerateKey(chacha20poly1305.KeySize)
-
-	aead, err := chacha20poly1305.NewX(key)
+	aead, err := chacha20poly1305.NewX(Key())
 	if err != nil {
 		return nil, err
 	}
@@ -49,7 +46,7 @@ func Reset() {
 }
 
 // Encrypt encrypts a message
-func Encrypt(message any, key []byte) (string, error) {
+func Encrypt(message any) (string, error) {
 	msg := util.InterfaceToByte(message)
 	aead, err := getCipher()
 	if err != nil {
@@ -68,7 +65,7 @@ func Encrypt(message any, key []byte) (string, error) {
 }
 
 // Decrypt decrypts a message
-func Decrypt(encryptedMessage any, key []byte) (string, error) {
+func Decrypt(encryptedMessage any) (string, error) {
 	aead, err := getCipher()
 	if err != nil {
 		return "", err

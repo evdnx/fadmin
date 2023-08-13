@@ -38,7 +38,7 @@ func Login(username, password string) error {
 	}
 
 	// encrypt password
-	encryptedPassword, err := crypt.Encrypt(password, crypt.Key())
+	encryptedPassword, err := crypt.Encrypt(password)
 	if err != nil {
 		return err
 	}
@@ -64,7 +64,7 @@ func Password() string {
 	}
 
 	// decrypt password
-	password, err := crypt.Decrypt(pwd, crypt.Key())
+	password, err := crypt.Decrypt(pwd)
 	if err != nil {
 		return ""
 	}
