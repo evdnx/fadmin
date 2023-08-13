@@ -1,5 +1,7 @@
 package crypt
 
-func Test() {
-	
+import "testing"
+
+func Test(t *testing.T) {
+
 }
