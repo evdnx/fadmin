@@ -52,6 +52,15 @@ func Login(username, password string) error {
 	return nil
 }
 
+func Logout() error {
+	err := db.Update(constants.AuthBucket, "password", "")
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func Username() string {
 	return ""
 }
