@@ -78,14 +78,6 @@ func main() {
 		Storage: storage,
 	}))
 
-	// auth not required for login
-	login := app.Group("/")
-	login.Post("/login")
-
-	// auth required for everything else
-	api := app.Group("/")
-	api.Use(middleware.AuthMiddleware())
-
 	// embed ui into program binary
 	f, err := fs.Sub(embedFS, "ui/dist/pwa")
 	if err != nil {
@@ -96,6 +88,14 @@ func main() {
 		Root:         http.FS(f),
 		NotFoundFile: "404.html",
 	}))
+
+	// auth not required for login
+	login := app.Group("/")
+	login.Post("/login")
+
+	// auth required for everything else
+	api := app.Group("/")
+	api.Use(middleware.AuthMiddleware())
 
 	// start app
 	err = app.Listen(fmt.Sprint(":", *port))
