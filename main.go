@@ -11,6 +11,7 @@ import (
 
 	"github.com/evdnx/unixmint/auth"
 	"github.com/evdnx/unixmint/db"
+	"github.com/evdnx/unixmint/middleware"
 	"github.com/goccy/go-json"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
@@ -76,6 +77,14 @@ func main() {
 		//LimiterMiddleware: limiter.SlidingWindow{},
 		Storage: storage,
 	}))
+
+	// auth not required for login
+	login := app.Group("/")
+	login.Post("/login")
+
+	// auth required for everything else
+	api := app.Group("/")
+	api.Use(middleware.AuthMiddleware())
 
 	// embed ui into program binary
 	f, err := fs.Sub(embedFS, "ui/dist/pwa")
