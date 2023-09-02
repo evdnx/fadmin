@@ -16,17 +16,37 @@ import (
 
 func Init() error {
 	// try to read key
-	_, err := db.Read(constants.AuthBucket, "key")
+	_, err := db.Read(constants.AuthBucket, "crypto_key")
 	if err != nil {
 		// create new key
 		k := crypt.GenerateKey(32)
-		err = db.Update(constants.AuthBucket, "key", string(k))
+		err = db.Update(constants.AuthBucket, "crypto_key", string(k))
+		if err != nil {
+			return err
+		}
+	}
+
+	// branca key
+	_, err = db.Read(constants.AuthBucket, "branca_key")
+	if err != nil {
+		// create new key
+		k := crypt.GenerateKey(32)
+		err = db.Update(constants.AuthBucket, "branca_key", string(k))
 		if err != nil {
 			return err
 		}
 	}
 
 	return nil
+}
+
+func BrancaKey() []byte {
+	key, err := db.Read(constants.AuthBucket, "branca_key")
+	if err != nil {
+		return nil
+	}
+
+	return []byte(key)
 }
 
 func Login(username, password string) error {
@@ -82,7 +102,7 @@ func Password() string {
 }
 
 func EncodeToken(payload any, ttlHours uint32) (string, int64, error) {
-	brc, err := branca.NewBranca([]byte("TODO"))
+	brc, err := branca.NewBranca(BrancaKey())
 	if err != nil {
 		return "", 0, err
 	}
@@ -101,7 +121,7 @@ func EncodeToken(payload any, ttlHours uint32) (string, int64, error) {
 }
 
 func DecodeToken(token string, ttlHours uint32, data any) (rawPayload []byte, e error) {
-	brc, err := branca.NewBranca([]byte("TODO"))
+	brc, err := branca.NewBranca(BrancaKey())
 	if err != nil {
 		return nil, err
 	}

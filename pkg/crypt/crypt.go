@@ -27,7 +27,7 @@ func getCipher() (cipher.AEAD, error) {
 }
 
 func Key() []byte {
-	key, err := db.Read(constants.AuthBucket, "key")
+	key, err := db.Read(constants.AuthBucket, "crypto_key")
 	if err != nil {
 		return nil
 	}
