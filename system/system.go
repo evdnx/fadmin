@@ -1,6 +1,8 @@
 package system
 
 import (
+	"runtime"
+
 	"github.com/evdnx/unixmint/cmd"
 )
 
@@ -30,6 +32,14 @@ type Host struct {
 }
 
 func Info() (string, error) {
+	switch runtime.GOOS {
+	case "linux":
+	case "freebsd":
+	case "openbsd":
+	case "netbsd":
+	case "dragonfly":
+	}
+
 	out, err := cmd.Exec("hostnamectl --json=short").Output()
 	if err != nil {
 		return "", err
