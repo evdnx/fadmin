@@ -9,3 +9,6 @@ pre-alpha
 
 # Deployment dependencies
 **None**. The app comes in the form of just a **single binary** - without any external dependencies.
+
+# Supported operating systems
+FreeBSD, Ubuntu and counting.
