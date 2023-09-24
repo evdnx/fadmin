@@ -69,6 +69,12 @@ func Login(username, password string) error {
 		return err
 	}
 
+	// set last login time
+	err = db.Update(constants.AuthBucket, "last_login", fmt.Sprintf("%v", time.Now().UTC()))
+	if err != nil {
+		return err
+	}
+
 	// logout after 24 hours automatically
 	time.AfterFunc(24*time.Hour, func() { Logout() })
 
