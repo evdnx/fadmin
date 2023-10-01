@@ -7,31 +7,32 @@ import (
 	"time"
 
 	"github.com/essentialkaos/branca/v2"
-	"github.com/evdnx/unixmint/constants"
 	"github.com/evdnx/unixmint/db"
 	"github.com/evdnx/unixmint/pkg/crypt"
 	"github.com/evdnx/unixmint/pkg/util"
 	"github.com/goccy/go-json"
 )
 
+var Timer *time.Timer
+
 func Init() error {
 	// try to read key
-	_, err := db.Read(constants.AuthBucket, "crypto_key")
+	_, err := db.Read(db.AuthBucket, "crypto_key")
 	if err != nil {
 		// create new key
 		k := crypt.GenerateKey(32)
-		err = db.Update(constants.AuthBucket, "crypto_key", string(k))
+		err = db.Update(db.AuthBucket, "crypto_key", string(k))
 		if err != nil {
 			return err
 		}
 	}
 
 	// branca key
-	_, err = db.Read(constants.AuthBucket, "branca_key")
+	_, err = db.Read(db.AuthBucket, "branca_key")
 	if err != nil {
 		// create new key
 		k := crypt.GenerateKey(32)
-		err = db.Update(constants.AuthBucket, "branca_key", string(k))
+		err = db.Update(db.AuthBucket, "branca_key", string(k))
 		if err != nil {
 			return err
 		}
@@ -41,7 +42,7 @@ func Init() error {
 }
 
 func BrancaKey() []byte {
-	key, err := db.Read(constants.AuthBucket, "branca_key")
+	key, err := db.Read(db.AuthBucket, "branca_key")
 	if err != nil {
 		return nil
 	}
@@ -64,25 +65,25 @@ func Login(username, password string) error {
 	}
 
 	// write encrypted password to db
-	err = db.Update(constants.AuthBucket, "password", encryptedPassword)
+	err = db.Update(db.AuthBucket, "password", encryptedPassword)
 	if err != nil {
 		return err
 	}
 
 	// set last login time
-	err = db.Update(constants.AuthBucket, "last_login", fmt.Sprintf("%v", time.Now().UTC()))
+	err = db.Update(db.AuthBucket, "last_login", time.Now().UTC().Format(time.RFC3339))
 	if err != nil {
 		return err
 	}
 
 	// logout after 24 hours automatically
-	time.AfterFunc(24*time.Hour, func() { Logout() })
+	Timer = time.AfterFunc(24*time.Hour, func() { Logout() })
 
 	return nil
 }
 
 func Logout() error {
-	err := db.Update(constants.AuthBucket, "password", "")
+	err := db.Update(db.AuthBucket, "password", "")
 	if err != nil {
 		return err
 	}
@@ -96,7 +97,7 @@ func Username() string {
 
 func Password() string {
 	// read password
-	pwd, err := db.Read(constants.AuthBucket, "password")
+	pwd, err := db.Read(db.AuthBucket, "password")
 	if err != nil {
 		return ""
 	}

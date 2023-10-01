@@ -44,8 +44,22 @@ func main() {
 		glog.Fatalln(err)
 	}
 
+	// get last login
+	last_login, err := db.Read(db.AuthBucket, "last_login")
+	if err == nil {
+		lastLogin, err := time.Parse(time.RFC3339, last_login)
+		if err == nil {
+			now := time.Now().UTC()
+			allowedTime := lastLogin.Add(24 * time.Hour)
+			if allowedTime.Before(now) {
+				// difference between now and allowedTime
+				auth.Timer = time.AfterFunc(now.Sub(allowedTime), func() { auth.Logout() })
+			}
+		}
+	}
+
 	// init services
-	err := auth.Init()
+	err = auth.Init()
 	if err != nil {
 		glog.Fatal(err)
 	}

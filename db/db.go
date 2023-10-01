@@ -4,15 +4,19 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/evdnx/unixmint/constants"
 	"go.etcd.io/bbolt"
+)
+
+const (
+	DbName     string = "unixmint.db"
+	AuthBucket string = "auth"
 )
 
 var db *bbolt.DB
 
 func Init() error {
 	var err error
-	db, err = bbolt.Open(constants.DbName, 0600, nil)
+	db, err = bbolt.Open(DbName, 0600, nil)
 	if err != nil {
 		return err
 	}
@@ -73,8 +77,4 @@ func Update(bucket, key, value string) error {
 		err = b.Put([]byte(key), []byte(value))
 		return err
 	})
-}
-
-func AuthBucket() {
-
 }

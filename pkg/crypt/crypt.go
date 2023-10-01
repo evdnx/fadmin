@@ -5,7 +5,6 @@ import (
 	"crypto/rand"
 	"errors"
 
-	"github.com/evdnx/unixmint/constants"
 	"github.com/evdnx/unixmint/db"
 	"github.com/evdnx/unixmint/pkg/util"
 	"golang.org/x/crypto/chacha20poly1305"
@@ -27,7 +26,7 @@ func getCipher() (cipher.AEAD, error) {
 }
 
 func Key() []byte {
-	key, err := db.Read(constants.AuthBucket, "crypto_key")
+	key, err := db.Read(db.AuthBucket, "crypto_key")
 	if err != nil {
 		return nil
 	}
