@@ -83,6 +83,7 @@ func Login(username, password string) error {
 }
 
 func Logout() error {
+	Timer = nil
 	err := db.Update(db.AuthBucket, "password", "")
 	if err != nil {
 		return err
