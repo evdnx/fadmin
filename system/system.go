@@ -32,18 +32,21 @@ type Host struct {
 }
 
 func Info() (string, error) {
+	info := ""
+
 	switch runtime.GOOS {
 	case "linux":
+		out, err := cmd.Exec("hostnamectl --json=short").Output()
+		if err != nil {
+			return "", err
+		}
+
+		info = string(out)
 	case "freebsd":
 	case "openbsd":
 	case "netbsd":
 	case "dragonfly":
 	}
 
-	out, err := cmd.Exec("hostnamectl --json=short").Output()
-	if err != nil {
-		return "", err
-	}
-
-	return string(out), nil
+	return info, nil
 }
