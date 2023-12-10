@@ -30,7 +30,6 @@ require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/dgraph-io/badger/v4 v4.2.0
 	github.com/essentialkaos/branca/v2 v2.0.0
-	github.com/goccy/go-json v0.10.2
 	github.com/golang/glog v1.1.2
 	github.com/google/uuid v1.3.1
 	github.com/klauspost/compress v1.16.7 // indirect

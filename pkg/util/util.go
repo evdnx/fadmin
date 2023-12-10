@@ -1,9 +1,8 @@
 package util
 
 import (
+	"encoding/json"
 	"math/rand"
-
-	"github.com/goccy/go-json"
 )
 
 // RandomString generates a random string of a given length
