@@ -6,19 +6,16 @@ import (
 	"fmt"
 	"io/fs"
 	"net/http"
-	"runtime/debug"
 	"time"
 
 	"github.com/evdnx/unixmint/auth"
 	"github.com/evdnx/unixmint/db"
-	"github.com/evdnx/unixmint/middleware"
-	"github.com/goccy/go-json"
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/filesystem"
-	"github.com/gofiber/fiber/v2/middleware/limiter"
-	"github.com/gofiber/fiber/v2/middleware/recover"
-	gofiber_bbolt_storage "github.com/gofiber/storage/bbolt"
+	mw "github.com/evdnx/unixmint/middleware"
+	"github.com/evdnx/unixmint/store"
 	"github.com/golang/glog"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"github.com/labstack/gommon/log"
 )
 
 //go:embed ui/dist/pwa/*
@@ -64,32 +61,38 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	// create new fiber app
-	app := fiber.New(fiber.Config{
-		JSONEncoder: json.Marshal,
-		JSONDecoder: json.Unmarshal,
-	})
+	// create a new echo app
+	e := echo.New()
 
 	// use and config recovery middleware with custom stacktrace handler
-	app.Use(recover.New(recover.Config{
-		EnableStackTrace: true,
-		StackTraceHandler: func(c *fiber.Ctx, e any) {
-			glog.Errorf("\npanic: %v\n%s\n", e, debug.Stack())
+	e.Use(middleware.RecoverWithConfig(middleware.RecoverConfig{
+		StackSize: 1 << 10, // 1 KB
+		LogLevel:  log.ERROR,
+		LogErrorFunc: func(c echo.Context, err error, stack []byte) error {
+			glog.Errorf("\npanic: %v\n%s\n", err, stack)
+			return err
 		},
 	}))
 
 	// initialize rate limiter store
-	storage := gofiber_bbolt_storage.New(gofiber_bbolt_storage.Config{
-		Database: "ratelimit.db",
-		Bucket:   "ratelimit",
-	})
+	//Database: "ratelimit.db",
+	//Bucket:   "ratelimit",
 
 	// rate limiter
-	app.Use(limiter.New(limiter.Config{
-		Max:        1,
-		Expiration: 1 * time.Second,
-		//LimiterMiddleware: limiter.SlidingWindow{},
-		Storage: storage,
+	e.Use(middleware.RateLimiterWithConfig(middleware.RateLimiterConfig{
+		Store: store.NewRateLimiterPersistentStoreWithConfig(
+			store.RateLimiterPersistentStoreConfig{Rate: 10, Burst: 30, ExpiresIn: 3 * time.Minute},
+		),
+		IdentifierExtractor: func(ctx echo.Context) (string, error) {
+			id := ctx.RealIP()
+			return id, nil
+		},
+		ErrorHandler: func(context echo.Context, err error) error {
+			return context.JSON(http.StatusTooManyRequests, nil)
+		},
+		DenyHandler: func(context echo.Context, identifier string, err error) error {
+			return context.JSON(http.StatusForbidden, nil)
+		},
 	}))
 
 	// embed ui into program binary
@@ -98,21 +101,19 @@ func main() {
 		glog.Fatal(err)
 	}
 
-	app.Use(filesystem.New(filesystem.Config{
-		Root:         http.FS(f),
-		NotFoundFile: "404.html",
-	}))
+	assetHandler := http.FileServer(http.FS(f))
+	e.GET("/", echo.WrapHandler(assetHandler))
 
 	// auth not required for login
-	login := app.Group("/")
-	login.Post("/login")
+	login := e.Group("/")
+	login.POST("/login", func(c echo.Context) error { return nil })
 
 	// auth required for everything else
-	api := app.Group("/")
-	api.Use(middleware.AuthMiddleware())
+	api := e.Group("/")
+	api.Use(mw.AuthMiddleware())
 
 	// start app
-	err = app.Listen(fmt.Sprint(":", *port))
+	err = e.Start(fmt.Sprint(":", *port))
 	if err != nil {
 		glog.Fatal(err)
 	}
