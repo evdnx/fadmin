@@ -1,4 +1,4 @@
-module github.com/evdnx/unixmint
+module github.com/evdnx/fadmin
 
 go 1.22
 

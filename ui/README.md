@@ -1,4 +1,4 @@
-# LinuxControl UI (unixmint-ui)
+# LinuxControl UI (fadmin-ui)
 
 LinuxControl UI
 

@@ -3,7 +3,7 @@ package system
 import (
 	"runtime"
 
-	"github.com/evdnx/unixmint/cmd"
+	"github.com/evdnx/fadmin/cmd"
 )
 
 type Host struct {

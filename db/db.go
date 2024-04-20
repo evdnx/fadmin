@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	DbName     string = "unixmint.db"
+	DbName     string = "fadmin.db"
 	AuthBucket string = "auth"
 )
 

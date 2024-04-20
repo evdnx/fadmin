@@ -5,7 +5,7 @@ import (
 
 	"github.com/labstack/echo/v4"
 
-	"github.com/evdnx/unixmint/auth"
+	"github.com/evdnx/fadmin/auth"
 )
 
 func AuthMiddleware() echo.MiddlewareFunc {

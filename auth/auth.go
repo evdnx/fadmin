@@ -8,9 +8,9 @@ import (
 	"time"
 
 	"github.com/essentialkaos/branca/v2"
-	"github.com/evdnx/unixmint/db"
-	"github.com/evdnx/unixmint/pkg/crypt"
-	"github.com/evdnx/unixmint/pkg/util"
+	"github.com/evdnx/fadmin/db"
+	"github.com/evdnx/fadmin/pkg/crypt"
+	"github.com/evdnx/fadmin/pkg/util"
 )
 
 var Timer *time.Timer

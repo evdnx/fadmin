@@ -8,10 +8,10 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/evdnx/unixmint/auth"
-	"github.com/evdnx/unixmint/db"
-	mw "github.com/evdnx/unixmint/middleware"
-	"github.com/evdnx/unixmint/store"
+	"github.com/evdnx/fadmin/auth"
+	"github.com/evdnx/fadmin/db"
+	mw "github.com/evdnx/fadmin/middleware"
+	"github.com/evdnx/fadmin/store"
 	"github.com/golang/glog"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
@@ -26,7 +26,7 @@ func main() {
 	// logging
 	flag.Set("logtostderr", "false")
 	flag.Set("alsologtostderr", "false")
-	flag.Set("log_dir", "/var/log/unixmint")
+	flag.Set("log_dir", "/var/log/fadmin")
 	// port
 	port := flag.Int("port", 3000, "")
 

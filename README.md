@@ -1,8 +1,8 @@
-# UnixMint
+# fadmin
 **Simple server administration tool for Unix-like systems - written in Go and Typescript**  
   
-[![License](https://img.shields.io/github/license/evdnx/unixmint)](https://github.com/evdnx/unixmint/blob/main/LICENSE)
-[![Go report](https://goreportcard.com/badge/github.com/evdnx/unixmint)](https://goreportcard.com/report/github.com/evdnx/unixmint)
+[![License](https://img.shields.io/github/license/evdnx/fadmin)](https://github.com/evdnx/fadmin/blob/main/LICENSE)
+[![Go report](https://goreportcard.com/badge/github.com/evdnx/fadmin)](https://goreportcard.com/report/github.com/evdnx/fadmin)
 
 # Status
 pre-alpha

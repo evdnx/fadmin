@@ -5,8 +5,8 @@ import (
 	"crypto/rand"
 	"errors"
 
-	"github.com/evdnx/unixmint/db"
-	"github.com/evdnx/unixmint/pkg/util"
+	"github.com/evdnx/fadmin/db"
+	"github.com/evdnx/fadmin/pkg/util"
 	"golang.org/x/crypto/chacha20poly1305"
 )
 
