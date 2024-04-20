@@ -1,6 +1,6 @@
-# LinuxControl UI (fadmin-ui)
+# Fadmin UI (fadmin-ui)
 
-LinuxControl UI
+Fadmin UI
 
 ## Install the dependencies
 ```bash
