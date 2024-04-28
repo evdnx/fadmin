@@ -1,8 +1,6 @@
 package system
 
 import (
-	"runtime"
-
 	"github.com/evdnx/fadmin/cmd"
 )
 
@@ -32,21 +30,10 @@ type Host struct {
 }
 
 func Info() (string, error) {
-	info := ""
-
-	switch runtime.GOOS {
-	case "linux":
-		out, err := cmd.Exec("hostnamectl --json=short").Output()
-		if err != nil {
-			return "", err
-		}
-
-		info = string(out)
-	case "freebsd":
-	case "openbsd":
-	case "netbsd":
-	case "dragonfly":
+	info, err := cmd.Exec("hostnamectl --json=short").Output()
+	if err != nil {
+		return "", err
 	}
 
-	return info, nil
+	return string(info), nil
 }
